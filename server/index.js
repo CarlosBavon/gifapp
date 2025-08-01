@@ -96,8 +96,6 @@ app.post('/api/apply', async (req, res) => {
       });
     }
 
-<<<<<<< HEAD
-=======
     // Check if email is configured
     if (!validateEnvVars()) {
       return res.status(500).json({
@@ -106,7 +104,6 @@ app.post('/api/apply', async (req, res) => {
       });
     }
 
->>>>>>> cursor/email-application-details-backend-c26a
     // Create email content
     const emailContent = formatApplicationData(applicationData);
     
@@ -125,11 +122,7 @@ app.post('/api/apply', async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     
-<<<<<<< HEAD
-    console.log('Application email sent successfully');
-=======
     console.log('Application email sent successfully to:', process.env.RECIPIENT_EMAIL);
->>>>>>> cursor/email-application-details-backend-c26a
     res.status(200).json({ 
       success: true, 
       message: 'Application submitted and email sent successfully!' 
@@ -137,10 +130,6 @@ app.post('/api/apply', async (req, res) => {
 
   } catch (error) {
     console.error('Error processing application:', error);
-<<<<<<< HEAD
-    res.status(500).json({ 
-      error: 'Failed to process application',
-=======
     
     // Provide more helpful error messages
     let errorMessage = 'Failed to process application';
@@ -152,7 +141,6 @@ app.post('/api/apply', async (req, res) => {
     
     res.status(500).json({ 
       error: errorMessage,
->>>>>>> cursor/email-application-details-backend-c26a
       details: error.message 
     });
   }
@@ -163,11 +151,6 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running!' });
 });
 
-<<<<<<< HEAD
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📧 Email service configured for: ${process.env.RECIPIENT_EMAIL || 'Not configured'}`);
-=======
 // Validate environment on startup
 const envValid = validateEnvVars();
 
@@ -183,5 +166,4 @@ app.listen(PORT, () => {
   } else {
     console.log('✅ Email service ready!');
   }
->>>>>>> cursor/email-application-details-backend-c26a
 });
