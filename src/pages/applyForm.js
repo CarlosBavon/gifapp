@@ -31,7 +31,7 @@ function ApplyForm() {
     e.preventDefault();
 
     try {
-      const response = await fetch('api/apply', {
+      const response = await fetch('/api/apply', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -40,10 +40,17 @@ function ApplyForm() {
       });
 
       if (response.ok) {
+        const result = await response.json();
+        console.log('Application submitted successfully:', result.message);
         setSubmitted(true);
-      } 
+      } else {
+        const error = await response.json();
+        console.error('Error submitting application:', error);
+        alert('Failed to submit application: ' + error.error);
+      }
     } catch (error) {
         console.error('Error submitting application:', error);
+        alert('Failed to submit application. Please try again.');
       }
   };
 
