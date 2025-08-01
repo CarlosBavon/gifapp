@@ -12,7 +12,7 @@ app.use(express.json());
 
 // Email transporter configuration
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     service: 'gmail', // You can change this to other services like 'outlook', 'yahoo', etc.
     auth: {
       user: process.env.EMAIL_USER,
