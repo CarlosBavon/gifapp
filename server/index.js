@@ -10,9 +10,22 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Validate environment variables
+const validateEnvVars = () => {
+  const required = ['EMAIL_USER', 'EMAIL_PASSWORD', 'RECIPIENT_EMAIL'];
+  const missing = required.filter(key => !process.env[key] || process.env[key].includes('your-'));
+  
+  if (missing.length > 0) {
+    console.warn(`⚠️  Missing or placeholder environment variables: ${missing.join(', ')}`);
+    console.warn('📧 Email service will not work until these are configured properly.');
+    return false;
+  }
+  return true;
+};
+
 // Email transporter configuration
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     service: 'gmail', // You can change this to other services like 'outlook', 'yahoo', etc.
     auth: {
       user: process.env.EMAIL_USER,
@@ -83,6 +96,17 @@ app.post('/api/apply', async (req, res) => {
       });
     }
 
+<<<<<<< HEAD
+=======
+    // Check if email is configured
+    if (!validateEnvVars()) {
+      return res.status(500).json({
+        error: 'Email service not configured',
+        details: 'Please configure your email credentials in the environment variables'
+      });
+    }
+
+>>>>>>> cursor/email-application-details-backend-c26a
     // Create email content
     const emailContent = formatApplicationData(applicationData);
     
@@ -101,7 +125,11 @@ app.post('/api/apply', async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     
+<<<<<<< HEAD
     console.log('Application email sent successfully');
+=======
+    console.log('Application email sent successfully to:', process.env.RECIPIENT_EMAIL);
+>>>>>>> cursor/email-application-details-backend-c26a
     res.status(200).json({ 
       success: true, 
       message: 'Application submitted and email sent successfully!' 
@@ -109,8 +137,22 @@ app.post('/api/apply', async (req, res) => {
 
   } catch (error) {
     console.error('Error processing application:', error);
+<<<<<<< HEAD
     res.status(500).json({ 
       error: 'Failed to process application',
+=======
+    
+    // Provide more helpful error messages
+    let errorMessage = 'Failed to process application';
+    if (error.message.includes('Invalid login')) {
+      errorMessage = 'Email authentication failed. Please check your Gmail credentials and use an App Password.';
+    } else if (error.message.includes('ENOTFOUND')) {
+      errorMessage = 'Network error. Please check your internet connection.';
+    }
+    
+    res.status(500).json({ 
+      error: errorMessage,
+>>>>>>> cursor/email-application-details-backend-c26a
       details: error.message 
     });
   }
@@ -121,7 +163,25 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running!' });
 });
 
+<<<<<<< HEAD
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📧 Email service configured for: ${process.env.RECIPIENT_EMAIL || 'Not configured'}`);
+=======
+// Validate environment on startup
+const envValid = validateEnvVars();
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📧 Email service configured for: ${process.env.RECIPIENT_EMAIL || 'Not configured'}`);
+  
+  if (!envValid) {
+    console.log('\n🔧 To fix this:');
+    console.log('1. Copy .env.example to .env');
+    console.log('2. Replace placeholder values with your Gmail credentials');
+    console.log('3. Restart the server\n');
+  } else {
+    console.log('✅ Email service ready!');
+  }
+>>>>>>> cursor/email-application-details-backend-c26a
 });
